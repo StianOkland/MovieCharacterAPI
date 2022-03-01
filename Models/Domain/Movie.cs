@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace MovieChatacterAPI.Models
+namespace MovieChatacterAPI.Models.Domain
 {
     public class Movie
     {

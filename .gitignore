@@ -1,0 +1,11 @@
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+
+# Ignore bin and obj folders
+**/bin/*
+**/obj/*
