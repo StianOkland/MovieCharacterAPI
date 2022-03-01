@@ -1,14 +1,11 @@
-﻿
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using MovieChatacterAPI.Models.Domain;
 
-namespace MovieChatacterAPI.Models.Domain
+namespace MovieChatacterAPI.Models
 {
-    public class Movie
+    public class MovieDTO
     {
-        public int Id { get; set; }
-
         [MaxLength(50)]
         public string MovieTitle { get; set; }
 
@@ -25,8 +22,6 @@ namespace MovieChatacterAPI.Models.Domain
         [MaxLength(100)]
         public string Trailer { get; set; }
         public int FranchiseId { get; set; }
-        public Franchise Franchise { get; set; }
         public ICollection<Character> Characters { get; set; }
-
     }
 }
