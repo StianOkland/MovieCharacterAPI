@@ -118,5 +118,6 @@ namespace MovieChatacterAPI.Controllers
         {
             return _context.Franchises.Any(e => e.Id == id);
         }
+
     }
 }

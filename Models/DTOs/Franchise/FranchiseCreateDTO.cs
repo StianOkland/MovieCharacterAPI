@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using MovieChatacterAPI.Models.Domain;
 
 namespace MovieChatacterAPI.Models
-{
+{ 
     public class FranchiseCreateDTO
     {
         [MaxLength(50)]

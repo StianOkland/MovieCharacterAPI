@@ -58,7 +58,6 @@ namespace MovieChatacterAPI.Controllers
             try
             {
                 _context.Add(movie);
-
                 await _context.SaveChangesAsync();
             }
             catch
@@ -119,5 +118,6 @@ namespace MovieChatacterAPI.Controllers
         {
             return _context.Movies.Any(e => e.Id == id);
         }
+
     }
 }
