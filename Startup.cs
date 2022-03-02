@@ -37,10 +37,6 @@ namespace MovieChatacterAPI
                     Version = "v1",
                     Description = "An API for the MovieCharacter database"
                 });
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
-
             });
         }
 
