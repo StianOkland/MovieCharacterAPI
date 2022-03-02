@@ -26,17 +26,17 @@ namespace MovieChatacterAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MovieDTO>>> GetAllMovies()
+        public async Task<ActionResult<IEnumerable<MovieReadDTO>>> GetAllMovies()
         {
             var movies = await _context.Movies.ToListAsync();
 
-            var moviesDto = _mapper.Map<List<MovieDTO>>(movies);
+            var moviesDto = _mapper.Map<List<MovieReadDTO>>(movies);
 
             return Ok(moviesDto);
         }
 
-        [HttpGet(template: "{id}")]
-        public async Task<ActionResult<MovieDTO>> GetMovieById(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<MovieReadDTO>> GetMovieById(int id)
         {
             var movie = await _context.Movies.FindAsync(id);
 
@@ -45,13 +45,13 @@ namespace MovieChatacterAPI.Controllers
                 return NotFound();
             }
 
-            var movieDto = _mapper.Map<MovieDTO>(movie);
+            var movieDto = _mapper.Map<MovieReadDTO>(movie);
 
             return Ok(movieDto);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Movie>> PostMovie([FromBody] MovieDTO movieDto)
+        public async Task<ActionResult<Movie>> PostMovie([FromBody] MovieCreateDTO movieDto)
         {
             var movie = _mapper.Map<Movie>(movieDto);
 
@@ -66,13 +66,13 @@ namespace MovieChatacterAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            var newMovie = _mapper.Map<MovieDTO>(movie);
+            var newMovie = _mapper.Map<MovieCreateDTO>(movie);
 
             return CreatedAtAction("GetById", new { Id = movie.Id }, newMovie);
         }
 
-        [HttpDelete(template: "{id}")]
-        public async Task<ActionResult> DeleteMovie(int id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteMovie(int id)
         {
             var movie = await _context.Movies.FindAsync(id);
 
@@ -87,18 +87,37 @@ namespace MovieChatacterAPI.Controllers
             return NoContent();
         }
 
-        [HttpPut(template: "{id}")]
-        public async Task<ActionResult> UpdateMovie(int id, [FromBody] Movie movie)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateMovie(int id, [FromBody] MovieEditDTO movieDto)
         {
-            if (id != movie.Id)
+            if (id != movieDto.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(movie).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            Movie domainMovie = _mapper.Map<Movie>(movieDto);
+            _context.Entry(domainMovie).State = EntityState.Modified;
 
+            try
+            {
+                await _context.SaveChangesAsync();
+            } catch(DbUpdateConcurrencyException)
+            {
+                if(!MovieExist(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
             return NoContent();
+        }
+
+        private bool MovieExist(int id)
+        {
+            return _context.Movies.Any(e => e.Id == id);
         }
     }
 }

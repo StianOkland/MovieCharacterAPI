@@ -26,17 +26,17 @@ namespace MovieChatacterAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<FranchiseDTO>>> GetAllFranchises()
+        public async Task<ActionResult<IEnumerable<FranchiseReadDTO>>> GetAllFranchises()
         {
             var franchises = await _context.Franchises.ToListAsync();
 
-            var franchisesDto = _mapper.Map<List<FranchiseDTO>>(franchises);
+            var franchisesDto = _mapper.Map<List<FranchiseReadDTO>>(franchises);
 
             return Ok(franchisesDto);
         }
 
-        [HttpGet(template: "{id}")]
-        public async Task<ActionResult<FranchiseDTO>> GetFranchiseById(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<FranchiseReadDTO>> GetFranchiseById(int id)
         {
             var franchise = await _context.Franchises.FindAsync(id);
 
@@ -45,13 +45,13 @@ namespace MovieChatacterAPI.Controllers
                 return NotFound();
             }
 
-            var franchiseDto = _mapper.Map<FranchiseDTO>(franchise);
+            var franchiseDto = _mapper.Map<FranchiseReadDTO>(franchise);
 
             return Ok(franchiseDto);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Franchise>> PostFranchise([FromBody] FranchiseDTO franchiseDto)
+        public async Task<ActionResult<Franchise>> PostFranchise([FromBody] FranchiseCreateDTO franchiseDto)
         {
             var franchise = _mapper.Map<Franchise>(franchiseDto);
 
@@ -66,13 +66,13 @@ namespace MovieChatacterAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            var newFranchise = _mapper.Map<FranchiseDTO>(franchise);
+            var newFranchise = _mapper.Map<FranchiseCreateDTO>(franchise);
 
             return CreatedAtAction("GetById", new { Id = franchise.Id }, newFranchise);
         }
 
-        [HttpDelete(template: "{id}")]
-        public async Task<ActionResult> DeleteFranchise(int id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFranchise(int id)
         {
             var franchise = await _context.Franchises.FindAsync(id);
 
@@ -82,23 +82,41 @@ namespace MovieChatacterAPI.Controllers
             }
 
             _context.Remove(franchise);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        [HttpPut(template: "{id}")]
-        public async Task<ActionResult> UpdateFranchise(int id, [FromBody] Franchise franchise)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateFranchise(int id, [FromBody] FranchiseEditDTO franchiseDto)
         {
-            if (id != franchise.Id)
+            if (id != franchiseDto.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(franchise).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            Franchise domainFranchise = _mapper.Map<Franchise>(franchiseDto);
+            _context.Entry(domainFranchise).State = EntityState.Modified;
 
+            try
+            {
+                await _context.SaveChangesAsync();
+            }catch(DbUpdateConcurrencyException)
+            {
+                if(!FranchiseExist(id))
+                {
+                    return NotFound();
+                } else
+                {
+                    throw;
+                }
+            }
             return NoContent();
+        }
+
+        private bool FranchiseExist(int id)
+        {
+            return _context.Franchises.Any(e => e.Id == id);
         }
     }
 }

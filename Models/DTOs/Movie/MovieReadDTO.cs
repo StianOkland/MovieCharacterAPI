@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using MovieChatacterAPI.Models.Domain;
 
 namespace MovieChatacterAPI.Models
 {
-    public class MovieDTO
+    public class MovieReadDTO
     {
+        public int Id { get; set; }
+
         [MaxLength(50)]
         public string MovieTitle { get; set; }
 

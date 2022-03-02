@@ -26,17 +26,17 @@ namespace MovieChatacterAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CharacterDTO>>> GetAllCharacters()
+        public async Task<ActionResult<IEnumerable<CharacterReadDTO>>> GetAllCharacters()
         {
             var characters = await _context.Characters.ToListAsync();
 
-            var charactersDto = _mapper.Map<List<CharacterDTO>>(characters);
+            var charactersDto = _mapper.Map<List<CharacterReadDTO>>(characters);
 
             return Ok(charactersDto);
         }
 
-        [HttpGet(template:"{id}")]
-        public async Task<ActionResult<CharacterDTO>> GetCharacterById(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<CharacterReadDTO>> GetCharacterById(int id)
         {
             var character = await _context.Characters.FindAsync(id);
 
@@ -45,13 +45,13 @@ namespace MovieChatacterAPI.Controllers
                 return NotFound();
             }
 
-            var characterDto = _mapper.Map<CharacterDTO>(character);
+            var characterDto = _mapper.Map<CharacterReadDTO>(character);
 
             return Ok(characterDto);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Character>> PostCharacter([FromBody] CharacterDTO characterDto)
+        public async Task<ActionResult<Character>> PostCharacter([FromBody] CharacterCreateDTO characterDto)
         {
             var character = _mapper.Map<Character>(characterDto);
 
@@ -66,15 +66,15 @@ namespace MovieChatacterAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            var newCharacter = _mapper.Map<CharacterDTO>(character);
+            var newCharacter = _mapper.Map<CharacterCreateDTO>(character);
 
-            return CreatedAtAction("GetById", new { Id = newCharacter.Id }, newCharacter);
+            return CreatedAtAction("GetById", new { Id = character.Id }, newCharacter);
         }
 
-        [HttpDelete(template: "{id}")]
-        public async Task<ActionResult> DeleteCharacter(int id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCharacter(int id)
         {
-            var character = _context.Characters.Find(id);
+            var character = await _context.Characters.FindAsync(id);
 
             if(character == null)
             {
@@ -87,18 +87,37 @@ namespace MovieChatacterAPI.Controllers
             return NoContent();
         }
 
-        [HttpPut(template: "{id}")]
-        public async Task<ActionResult> UpdateCharacter(int id, [FromBody] Character character)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCharacter(int id, [FromBody] CharacterEditDTO characterDto)
         {
-            if(id != character.Id)
+            if(id != characterDto.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(character).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            Character domainCharacter = _mapper.Map<Character>(characterDto);
+            _context.Entry(domainCharacter).State = EntityState.Modified;
 
+            try
+            {
+                await _context.SaveChangesAsync();
+            }catch(DbUpdateConcurrencyException)
+            {
+                if(!CharacterExist(id))
+                {
+                    return NotFound();
+                } else
+                {
+                    throw;
+                }
+            }
             return NoContent();
         }
+
+        private bool CharacterExist(int id)
+        {
+            return _context.Characters.Any(e => e.Id == id);
+        }
+
     }
 }
