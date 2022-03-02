@@ -26,9 +26,9 @@ namespace MovieChatacterAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<CharacterDTO>> GetAllCharacters()
+        public async Task<ActionResult<IEnumerable<CharacterDTO>>> GetAllCharacters()
         {
-            var characters = _context.Characters.ToList();
+            var characters = await _context.Characters.ToListAsync();
 
             var charactersDto = _mapper.Map<List<CharacterDTO>>(characters);
 
@@ -36,9 +36,9 @@ namespace MovieChatacterAPI.Controllers
         }
 
         [HttpGet(template:"{id}")]
-        public ActionResult<CharacterDTO> GetCharacterById(int id)
+        public async Task<ActionResult<CharacterDTO>> GetCharacterById(int id)
         {
-            var character = _context.Characters.Find(id);
+            var character = await _context.Characters.FindAsync(id);
 
             if(character == null)
             {
@@ -51,7 +51,7 @@ namespace MovieChatacterAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Character> PostCharacter([FromBody] CharacterDTO characterDto)
+        public async Task<ActionResult<Character>> PostCharacter([FromBody] CharacterDTO characterDto)
         {
             var character = _mapper.Map<Character>(characterDto);
 
@@ -59,7 +59,7 @@ namespace MovieChatacterAPI.Controllers
             {
                 _context.Add(character);
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
             }catch
             {
@@ -68,11 +68,11 @@ namespace MovieChatacterAPI.Controllers
 
             var newCharacter = _mapper.Map<CharacterDTO>(character);
 
-            return CreatedAtAction("GetById", new { Id = character.Id }, newCharacter);
+            return CreatedAtAction("GetById", new { Id = newCharacter.Id }, newCharacter);
         }
 
         [HttpDelete(template: "{id}")]
-        public ActionResult DeleteCharacter(int id)
+        public async Task<ActionResult> DeleteCharacter(int id)
         {
             var character = _context.Characters.Find(id);
 
@@ -82,13 +82,13 @@ namespace MovieChatacterAPI.Controllers
             }
 
             _context.Remove(character);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
         [HttpPut(template: "{id}")]
-        public ActionResult UpdateCharacter(int id, [FromBody] Character character)
+        public async Task<ActionResult> UpdateCharacter(int id, [FromBody] Character character)
         {
             if(id != character.Id)
             {
@@ -96,7 +96,7 @@ namespace MovieChatacterAPI.Controllers
             }
 
             _context.Entry(character).State = EntityState.Modified;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

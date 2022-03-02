@@ -26,9 +26,9 @@ namespace MovieChatacterAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<MovieDTO>> GetAllMovies()
+        public async Task<ActionResult<IEnumerable<MovieDTO>>> GetAllMovies()
         {
-            var movies = _context.Movies.ToList();
+            var movies = await _context.Movies.ToListAsync();
 
             var moviesDto = _mapper.Map<List<MovieDTO>>(movies);
 
@@ -36,9 +36,9 @@ namespace MovieChatacterAPI.Controllers
         }
 
         [HttpGet(template: "{id}")]
-        public ActionResult<MovieDTO> GetMovieById(int id)
+        public async Task<ActionResult<MovieDTO>> GetMovieById(int id)
         {
-            var movie = _context.Movies.Find(id);
+            var movie = await _context.Movies.FindAsync(id);
 
             if (movie == null)
             {
@@ -51,7 +51,7 @@ namespace MovieChatacterAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Movie> PostMovie([FromBody] MovieDTO movieDto)
+        public async Task<ActionResult<Movie>> PostMovie([FromBody] MovieDTO movieDto)
         {
             var movie = _mapper.Map<Movie>(movieDto);
 
@@ -59,7 +59,7 @@ namespace MovieChatacterAPI.Controllers
             {
                 _context.Add(movie);
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch
             {
@@ -72,9 +72,9 @@ namespace MovieChatacterAPI.Controllers
         }
 
         [HttpDelete(template: "{id}")]
-        public ActionResult DeleteMovie(int id)
+        public async Task<ActionResult> DeleteMovie(int id)
         {
-            var movie = _context.Movies.Find(id);
+            var movie = await _context.Movies.FindAsync(id);
 
             if (movie == null)
             {
@@ -82,13 +82,13 @@ namespace MovieChatacterAPI.Controllers
             }
 
             _context.Remove(movie);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
         [HttpPut(template: "{id}")]
-        public ActionResult UpdateMovie(int id, [FromBody] Movie movie)
+        public async Task<ActionResult> UpdateMovie(int id, [FromBody] Movie movie)
         {
             if (id != movie.Id)
             {
@@ -96,7 +96,7 @@ namespace MovieChatacterAPI.Controllers
             }
 
             _context.Entry(movie).State = EntityState.Modified;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

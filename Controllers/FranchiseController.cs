@@ -26,9 +26,9 @@ namespace MovieChatacterAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<FranchiseDTO>> GetAllFranchises()
+        public async Task<ActionResult<IEnumerable<FranchiseDTO>>> GetAllFranchises()
         {
-            var franchises = _context.Franchises.ToList();
+            var franchises = await _context.Franchises.ToListAsync();
 
             var franchisesDto = _mapper.Map<List<FranchiseDTO>>(franchises);
 
@@ -36,9 +36,9 @@ namespace MovieChatacterAPI.Controllers
         }
 
         [HttpGet(template: "{id}")]
-        public ActionResult<FranchiseDTO> GetFranchiseById(int id)
+        public async Task<ActionResult<FranchiseDTO>> GetFranchiseById(int id)
         {
-            var franchise = _context.Franchises.Find(id);
+            var franchise = await _context.Franchises.FindAsync(id);
 
             if (franchise == null)
             {
@@ -51,7 +51,7 @@ namespace MovieChatacterAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Franchise> PostFranchise([FromBody] FranchiseDTO franchiseDto)
+        public async Task<ActionResult<Franchise>> PostFranchise([FromBody] FranchiseDTO franchiseDto)
         {
             var franchise = _mapper.Map<Franchise>(franchiseDto);
 
@@ -59,7 +59,7 @@ namespace MovieChatacterAPI.Controllers
             {
                 _context.Add(franchise);
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch
             {
@@ -72,9 +72,9 @@ namespace MovieChatacterAPI.Controllers
         }
 
         [HttpDelete(template: "{id}")]
-        public ActionResult DeleteFranchise(int id)
+        public async Task<ActionResult> DeleteFranchise(int id)
         {
-            var franchise = _context.Franchises.Find(id);
+            var franchise = await _context.Franchises.FindAsync(id);
 
             if (franchise == null)
             {
@@ -88,7 +88,7 @@ namespace MovieChatacterAPI.Controllers
         }
 
         [HttpPut(template: "{id}")]
-        public ActionResult UpdateFranchise(int id, [FromBody] Franchise franchise)
+        public async Task<ActionResult> UpdateFranchise(int id, [FromBody] Franchise franchise)
         {
             if (id != franchise.Id)
             {
@@ -96,7 +96,7 @@ namespace MovieChatacterAPI.Controllers
             }
 
             _context.Entry(franchise).State = EntityState.Modified;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
