@@ -48,7 +48,7 @@ namespace MovieChatacterAPI.Migrations
                     Director = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Picture = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Trailer = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    FranchiseId = table.Column<int>(type: "int", nullable: false)
+                    FranchiseId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
