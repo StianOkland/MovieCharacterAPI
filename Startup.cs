@@ -7,8 +7,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using MovieChatacterAPI.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace MovieChatacterAPI
 {
@@ -32,11 +35,14 @@ namespace MovieChatacterAPI
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {
-                    Title = "MovieChatacterAPI",
+
+                c.SwaggerDoc("v1", new OpenApiInfo { 
+                    Title = "Assignment 3 - Movie Character API", 
                     Version = "v1",
-                    Description = "An API for the MovieCharacter database"
                 });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
         }
 
