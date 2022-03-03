@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -14,6 +15,9 @@ using MovieChatacterAPI.Models.Domain;
 namespace MovieChatacterAPI.Controllers
 {
     [Route("api/[controller]")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [ApiConventionType(typeof(DefaultApiConventions))]
     public class MovieController : Controller
     {
         private readonly MovieCharacterDbContext _context;
@@ -25,6 +29,10 @@ namespace MovieChatacterAPI.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Gets all movies from database
+        /// </summary>
+        /// <returns>List of movies</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MovieReadDTO>>> GetAllMovies()
         {
@@ -35,6 +43,11 @@ namespace MovieChatacterAPI.Controllers
             return Ok(moviesDto);
         }
 
+        /// <summary>
+        /// Gets movie from database by ID
+        /// </summary>
+        /// <param name="id">Movie ID</param>
+        /// <returns>Movie</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<MovieReadDTO>> GetMovieById(int id)
         {
@@ -50,6 +63,11 @@ namespace MovieChatacterAPI.Controllers
             return Ok(movieDto);
         }
 
+        /// <summary>
+        /// Adds movie to database
+        /// </summary>
+        /// <param name="movieDto">Movie to add</param>
+        /// <returns>Newly added movie</returns>
         [HttpPost]
         public async Task<ActionResult<Movie>> PostMovie([FromBody] MovieCreateDTO movieDto)
         {
@@ -73,6 +91,11 @@ namespace MovieChatacterAPI.Controllers
             return CreatedAtAction("GetMovieById", new { Id = movie.Id }, newMovie);
         }
 
+        /// <summary>
+        /// Deletes movie from database
+        /// </summary>
+        /// <param name="id">Movie ID</param>
+        /// <returns>Deletion result</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMovie(int id)
         {
@@ -88,6 +111,13 @@ namespace MovieChatacterAPI.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Updates movie in database
+        /// </summary>
+        /// <param name="id">Movie ID</param>
+        /// <param name="movieDto">New movie info</param>
+        /// <returns>Edit result</returns>
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMovie(int id, [FromBody] MovieEditDTO movieDto)
@@ -116,6 +146,12 @@ namespace MovieChatacterAPI.Controllers
             }
             return NoContent();
         }
+
+        /// <summary>
+        /// Get movie characters
+        /// </summary>
+        /// <param name="id">Movie ID</param>
+        /// <returns>List of characters in movie</returns>
 
         [HttpGet("charactersByMovie/{id}")]
         public async Task<ActionResult<List<CharacterReadDTO>>> GetCharactersByMovie(int id)

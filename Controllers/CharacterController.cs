@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -14,6 +15,9 @@ using MovieChatacterAPI.Models.Domain;
 namespace MovieChatacterAPI.Controllers
 {
     [Route("api/[controller]")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [ApiConventionType(typeof(DefaultApiConventions))]
     public class CharacterController : Controller
     {
         private readonly MovieCharacterDbContext _context;
@@ -25,6 +29,10 @@ namespace MovieChatacterAPI.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Gets all characters in database
+        /// </summary>
+        /// <returns>List of characters</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CharacterReadDTO>>> GetAllCharacters()
         {
@@ -34,6 +42,12 @@ namespace MovieChatacterAPI.Controllers
 
             return Ok(charactersDto);
         }
+
+        /// <summary>
+        /// Gets character in database by ID
+        /// </summary>
+        /// <param name="id">Character ID</param>
+        /// <returns>Character</returns>
 
         [HttpGet("{id}")]
         public async Task<ActionResult<CharacterReadDTO>> GetCharacterById(int id)
@@ -49,6 +63,12 @@ namespace MovieChatacterAPI.Controllers
 
             return Ok(characterDto);
         }
+
+        /// <summary>
+        /// Add character to database
+        /// </summary>
+        /// <param name="characterDto">Character to add</param>
+        /// <returns>Newly added character</returns>
 
         [HttpPost]
         public async Task<ActionResult<CharacterReadDTO>> PostCharacter([FromBody] CharacterCreateDTO characterDto)
@@ -71,7 +91,11 @@ namespace MovieChatacterAPI.Controllers
             return CreatedAtAction("GetCharacterById", new { Id = character.Id }, newCharacter);
         }
 
-
+        /// <summary>
+        /// Deletes character from database
+        /// </summary>
+        /// <param name="id">Character ID</param>
+        /// <returns>Deletion result</returns>
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCharacter(int id)
@@ -89,6 +113,13 @@ namespace MovieChatacterAPI.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Update character
+        /// </summary>
+        /// <param name="id">Character ID</param>
+        /// <param name="characterDto">New character info</param>
+        /// <returns>Update result</returns>
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCharacter(int id, [FromBody] CharacterEditDTO characterDto)
