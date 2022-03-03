@@ -118,7 +118,7 @@ namespace MovieChatacterAPI.Controllers
         }
 
         [HttpGet("charactersByMovie/{id}")]
-        public async Task<ActionResult<List<int>>> GetCharactersByMovie(int id)
+        public async Task<ActionResult<List<CharacterReadDTO>>> GetCharactersByMovie(int id)
         {
             var movie = await _context.Movies.Include(m => m.Characters).FirstOrDefaultAsync(m => m.Id == id);
 
@@ -126,8 +126,36 @@ namespace MovieChatacterAPI.Controllers
             {
                 return NotFound();
             }
-            return _mapper.Map<List<int>>(movie.Characters.ToList());
+            return _mapper.Map<List<CharacterReadDTO>>(movie.Characters.ToList());
         }
+
+
+        [HttpPost("char/{id}")]
+        public async Task<ActionResult> AssignCharactersToMovie(int id, [FromBody] List<int> characters)
+        {
+
+            var movie = await _context.Movies.Include(m => m.Characters).FirstOrDefaultAsync(m => m.Id == id);
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            foreach (var charId in characters)
+            {
+                var tempCharacter = await _context.Characters.FirstOrDefaultAsync(q => q.Id == charId);
+                if (tempCharacter != null)
+                {
+                    movie.Characters.Add(tempCharacter);
+                }
+
+            }
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
 
         private bool MovieExist(int id)
         {
