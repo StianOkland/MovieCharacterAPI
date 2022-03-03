@@ -36,11 +36,9 @@ namespace MovieChatacterAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MovieReadDTO>>> GetAllMovies()
         {
-            var movies = await _context.Movies.ToListAsync();
+            var movies = _mapper.Map<List<MovieReadDTO>>(await _context.Movies.Include(m => m.Characters).ToListAsync());
 
-            var moviesDto = _mapper.Map<List<MovieReadDTO>>(movies);
-
-            return Ok(moviesDto);
+            return Ok(movies);
         }
 
         /// <summary>
@@ -166,6 +164,11 @@ namespace MovieChatacterAPI.Controllers
         }
 
 
+        /// <summary>
+        /// Update characters in movie
+        /// </summary>
+        /// <param name="id">Movie ID</param>
+        /// <returns>Update result</returns>
         [HttpPost("char/{id}")]
         public async Task<ActionResult> AssignCharactersToMovie(int id, [FromBody] List<int> characters)
         {
