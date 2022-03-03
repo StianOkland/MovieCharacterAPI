@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -14,6 +15,9 @@ using MovieChatacterAPI.Models.Domain;
 namespace MovieChatacterAPI.Controllers
 {
     [Route("api/[controller]")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [ApiConventionType(typeof(DefaultApiConventions))]
     public class FranchiseController : Controller
     {
         private readonly MovieCharacterDbContext _context;
@@ -25,6 +29,11 @@ namespace MovieChatacterAPI.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Gets all franchises in database
+        /// </summary>
+        /// <returns>List of franchises</returns>
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FranchiseReadDTO>>> GetAllFranchises()
         {
@@ -34,6 +43,12 @@ namespace MovieChatacterAPI.Controllers
 
             return Ok(franchisesDto);
         }
+
+        /// <summary>
+        /// Gets franchise in database by ID
+        /// </summary>
+        /// <param name="id">Franchise ID</param>
+        /// <returns>Franchise</returns>
 
         [HttpGet("{id}")]
         public async Task<ActionResult<FranchiseReadDTO>> GetFranchiseById(int id)
@@ -49,6 +64,12 @@ namespace MovieChatacterAPI.Controllers
 
             return Ok(franchiseDto);
         }
+
+        /// <summary>
+        /// Adds franchise to database
+        /// </summary>
+        /// <param name="franchiseDto">Franchise to add</param>
+        /// <returns>Newly added franchise</returns>
 
         [HttpPost]
         public async Task<ActionResult<FranchiseReadDTO>> PostFranchise([FromBody] FranchiseCreateDTO franchiseDto)
@@ -71,6 +92,12 @@ namespace MovieChatacterAPI.Controllers
             return CreatedAtAction("GetFranchiseById", new { Id = franchise.Id }, newFranchise);
         }
 
+        /// <summary>
+        /// Deletes franchise from database
+        /// </summary>
+        /// <param name="id">Franchise ID</param>
+        /// <returns>Deletion result</returns>
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFranchise(int id)
         {
@@ -86,6 +113,13 @@ namespace MovieChatacterAPI.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Updates franchise in database
+        /// </summary>
+        /// <param name="id">Franchise ID</param>
+        /// <param name="franchiseDto">New franchise info</param>
+        /// <returns>Update result</returns>
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFranchise(int id, [FromBody] FranchiseEditDTO franchiseDto)
@@ -114,6 +148,11 @@ namespace MovieChatacterAPI.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Gets all movies in a franchise
+        /// </summary>
+        /// <param name="id">Franchise ID</param>
+        /// <returns>List of movies in a franchise</returns>
 
         [HttpGet("moviesByFranchise/{id}")]
         public async Task<ActionResult<List<MovieReadDTO>>> GetMoviesByFranchise(int id)
