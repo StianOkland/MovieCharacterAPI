@@ -119,7 +119,21 @@ namespace MovieChatacterAPI.Controllers
             return _context.Franchises.Any(e => e.Id == id);
         }
 
-        // TODO: update movies in a franchise
+        [HttpGet("moviesByFranchise/{id}")]
+        public async Task<ActionResult<List<MovieReadDTO>>> GetMoviesByFranchise(int id)
+        {
+
+            var franchise = await _context.Franchises.Include(f => f.Movies).FirstOrDefaultAsync(f => f.Id == id);
+
+            if (franchise == null)
+            {
+                return NotFound();
+            }
+
+            return _mapper.Map<List<MovieReadDTO>>(franchise.Movies.ToList());
+
+        }
+
 
     }
 }
