@@ -11,6 +11,5 @@ namespace MovieChatacterAPI.Models
 
         [MaxLength(50)]
         public string Description { get; set; }
-        public ICollection<Movie> Movies { get; set; }
     }
 }

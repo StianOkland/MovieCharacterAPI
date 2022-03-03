@@ -51,7 +51,7 @@ namespace MovieChatacterAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Franchise>> PostFranchise([FromBody] FranchiseCreateDTO franchiseDto)
+        public async Task<ActionResult<FranchiseReadDTO>> PostFranchise([FromBody] FranchiseCreateDTO franchiseDto)
         {
             var franchise = _mapper.Map<Franchise>(franchiseDto);
 
@@ -68,7 +68,7 @@ namespace MovieChatacterAPI.Controllers
 
             var newFranchise = _mapper.Map<FranchiseCreateDTO>(franchise);
 
-            return CreatedAtAction("GetById", new { Id = franchise.Id }, newFranchise);
+            return CreatedAtAction("GetFranchiseById", new { Id = franchise.Id }, newFranchise);
         }
 
         [HttpDelete("{id}")]
@@ -118,6 +118,8 @@ namespace MovieChatacterAPI.Controllers
         {
             return _context.Franchises.Any(e => e.Id == id);
         }
+
+        // TODO: update movies in a franchise
 
     }
 }

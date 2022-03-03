@@ -53,6 +53,9 @@ namespace MovieChatacterAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Movie>> PostMovie([FromBody] MovieCreateDTO movieDto)
         {
+            if (!FranchiseExist(movieDto.FranchiseId ?? -1))
+                return BadRequest();
+
             var movie = _mapper.Map<Movie>(movieDto);
 
             try
@@ -67,7 +70,7 @@ namespace MovieChatacterAPI.Controllers
 
             var newMovie = _mapper.Map<MovieCreateDTO>(movie);
 
-            return CreatedAtAction("GetById", new { Id = movie.Id }, newMovie);
+            return CreatedAtAction("GetMovieById", new { Id = movie.Id }, newMovie);
         }
 
         [HttpDelete("{id}")]
@@ -89,7 +92,7 @@ namespace MovieChatacterAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMovie(int id, [FromBody] MovieEditDTO movieDto)
         {
-            if (id != movieDto.Id)
+            if (id != movieDto.Id || !FranchiseExist(movieDto.FranchiseId ?? -1))
             {
                 return BadRequest();
             }
@@ -119,5 +122,10 @@ namespace MovieChatacterAPI.Controllers
             return _context.Movies.Any(e => e.Id == id);
         }
 
+        private bool FranchiseExist(int id)
+        {
+            return _context.Franchises.Any(e => e.Id == id);
+        }
+        // TODO: update characters
     }
 }

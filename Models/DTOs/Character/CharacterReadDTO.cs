@@ -7,6 +7,8 @@ namespace MovieChatacterAPI.Models
 {
     public class CharacterReadDTO
     {
+        public int Id { get; set; }
+
         [MaxLength(50)]
         public string FullName { get; set; }
 

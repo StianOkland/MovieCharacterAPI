@@ -9,14 +9,8 @@ namespace MovieChatacterAPI.Profiles
     {
         public CharacterProfile()
         {
-            CreateMap<Character, CharacterCreateDTO>()
-                .ForMember(cdto => cdto.Movies, opt =>
-                opt.MapFrom(m => m.Movies.Select(m => m.Id).ToArray()))
-                .ReverseMap();
-            CreateMap<Character, CharacterEditDTO>()
-                .ForMember(cdto => cdto.Movies, opt =>
-                opt.MapFrom(m => m.Movies.Select(m => m.Id).ToArray()))
-                .ReverseMap();
+            CreateMap<Character, CharacterCreateDTO>().ReverseMap();
+            CreateMap<Character, CharacterEditDTO>().ReverseMap();
             CreateMap<Character, CharacterReadDTO>()
                 .ForMember(cdto => cdto.Movies, opt =>
                 opt.MapFrom(m => m.Movies.Select(m => m.Id).ToArray()))

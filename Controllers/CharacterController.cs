@@ -51,7 +51,7 @@ namespace MovieChatacterAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Character>> PostCharacter([FromBody] CharacterCreateDTO characterDto)
+        public async Task<ActionResult<CharacterReadDTO>> PostCharacter([FromBody] CharacterCreateDTO characterDto)
         {
             var character = _mapper.Map<Character>(characterDto);
 
@@ -66,14 +66,17 @@ namespace MovieChatacterAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            var newCharacter = _mapper.Map<CharacterCreateDTO>(character);
+            var newCharacter = _mapper.Map<CharacterReadDTO>(character);
 
-            return CreatedAtAction("GetById", new { Id = character.Id }, newCharacter);
+            return CreatedAtAction("GetCharacterById", new { Id = character.Id }, newCharacter);
         }
+
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCharacter(int id)
         {
+            // TODO: remove from linking table on deletion
             var character = await _context.Characters.FindAsync(id);
 
             if(character == null)
