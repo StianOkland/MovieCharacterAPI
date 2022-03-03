@@ -114,26 +114,22 @@ namespace MovieChatacterAPI.Controllers
             return NoContent();
         }
 
-        private bool FranchiseExist(int id)
-        {
-            return _context.Franchises.Any(e => e.Id == id);
-        }
 
         [HttpGet("moviesByFranchise/{id}")]
         public async Task<ActionResult<List<MovieReadDTO>>> GetMoviesByFranchise(int id)
         {
-
             var franchise = await _context.Franchises.Include(f => f.Movies).FirstOrDefaultAsync(f => f.Id == id);
 
             if (franchise == null)
             {
                 return NotFound();
             }
-
             return _mapper.Map<List<MovieReadDTO>>(franchise.Movies.ToList());
-
         }
 
-
+        private bool FranchiseExist(int id)
+        {
+            return _context.Franchises.Any(e => e.Id == id);
+        }
     }
 }

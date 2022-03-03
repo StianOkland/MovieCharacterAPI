@@ -117,6 +117,18 @@ namespace MovieChatacterAPI.Controllers
             return NoContent();
         }
 
+        [HttpGet("charactersByMovie/{id}")]
+        public async Task<ActionResult<List<int>>> GetCharactersByMovie(int id)
+        {
+            var movie = await _context.Movies.Include(m => m.Characters).FirstOrDefaultAsync(m => m.Id == id);
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+            return _mapper.Map<List<int>>(movie.Characters.ToList());
+        }
+
         private bool MovieExist(int id)
         {
             return _context.Movies.Any(e => e.Id == id);
@@ -126,6 +138,5 @@ namespace MovieChatacterAPI.Controllers
         {
             return _context.Franchises.Any(e => e.Id == id);
         }
-        // TODO: update characters
     }
 }
