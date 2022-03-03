@@ -166,6 +166,40 @@ namespace MovieChatacterAPI.Controllers
             return _mapper.Map<List<MovieReadDTO>>(franchise.Movies.ToList());
         }
 
+
+        /// <summary>
+        /// Gets all movies in a franchise
+        /// </summary>
+        /// <param name="id">Franchise ID</param>
+        /// <returns>List of movies in a franchise</returns>
+
+        [HttpGet("charactersByFranchise/{id}")]
+        public async Task<ActionResult<List<CharacterReadDTO>>> GetCharactersByFranchise(int id)
+        {
+            var franchise = await _context.Franchises.Include(f => f.Movies).FirstOrDefaultAsync(f => f.Id == id);
+
+            if (franchise == null)
+            {
+                return NotFound();
+            }
+
+
+            List<Character> characters = new();
+            foreach (var movie in franchise.Movies)
+            {
+                Movie tmpMovie = await _context.Movies.Include(f => f.Characters).FirstOrDefaultAsync(f => f.Id == movie.Id); ;
+                if (tmpMovie == null)
+                    return BadRequest();
+                foreach (var character in tmpMovie.Characters)
+                {
+                    Character tmpCharacter = await _context.Characters.FindAsync(character.Id);
+                    characters.Add(tmpCharacter);
+                }
+
+            }
+            return _mapper.Map<List<CharacterReadDTO>>(characters);
+        }
+
         /// <summary>
         /// Update movies in franchise
         /// </summary>

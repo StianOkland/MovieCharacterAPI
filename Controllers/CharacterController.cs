@@ -36,11 +36,13 @@ namespace MovieChatacterAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CharacterReadDTO>>> GetAllCharacters()
         {
-            var characters = await _context.Characters.ToListAsync();
+            //var characters = await _context.Characters.ToListAsync();
 
-            var charactersDto = _mapper.Map<List<CharacterReadDTO>>(characters);
+            //var charactersDto = _mapper.Map<List<CharacterReadDTO>>(characters);
+            var characters = _mapper.Map<List<CharacterReadDTO>>(await _context.Characters.Include(m => m.Movies).ToListAsync());
 
-            return Ok(charactersDto);
+
+            return Ok(characters);
         }
 
         /// <summary>
