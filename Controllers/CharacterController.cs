@@ -12,6 +12,7 @@ using MovieChatacterAPI.Models.Domain;
 
 namespace MovieChatacterAPI.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
     [Produces(MediaTypeNames.Application.Json)]
     [Consumes(MediaTypeNames.Application.Json)]
