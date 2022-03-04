@@ -10,10 +10,9 @@ using Microsoft.EntityFrameworkCore;
 using MovieChatacterAPI.Models;
 using MovieChatacterAPI.Models.Domain;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace MovieChatacterAPI.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
     [Produces(MediaTypeNames.Application.Json)]
     [Consumes(MediaTypeNames.Application.Json)]
@@ -36,12 +35,7 @@ namespace MovieChatacterAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CharacterReadDTO>>> GetAllCharacters()
         {
-            //var characters = await _context.Characters.ToListAsync();
-
-            //var charactersDto = _mapper.Map<List<CharacterReadDTO>>(characters);
             var characters = _mapper.Map<List<CharacterReadDTO>>(await _context.Characters.Include(m => m.Movies).ToListAsync());
-
-
             return Ok(characters);
         }
 
@@ -102,7 +96,6 @@ namespace MovieChatacterAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCharacter(int id)
         {
-            // TODO: remove from linking table on deletion
             var character = await _context.Characters.FindAsync(id);
 
             if(character == null)
@@ -154,6 +147,5 @@ namespace MovieChatacterAPI.Controllers
         {
             return _context.Characters.Any(e => e.Id == id);
         }
-
     }
 }

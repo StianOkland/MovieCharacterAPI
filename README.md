@@ -1,7 +1,6 @@
 # MovieCharacterAPI
 
-Summary here....
-
+This is an ASP.NET Web API project, which uses Entity Framework Core for database creation, and has Swagger documentation. The database contains characters, movies and franchises, and includes one-to-many and many-to-many relationships. The API enables you access/modify data in the database.
 
 # Install
 

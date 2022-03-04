@@ -10,10 +10,9 @@ using Microsoft.EntityFrameworkCore;
 using MovieChatacterAPI.Models;
 using MovieChatacterAPI.Models.Domain;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace MovieChatacterAPI.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
     [Produces(MediaTypeNames.Application.Json)]
     [Consumes(MediaTypeNames.Application.Json)]
