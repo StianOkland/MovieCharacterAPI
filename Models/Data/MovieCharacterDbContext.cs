@@ -15,8 +15,6 @@ namespace MovieChatacterAPI.Models
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Franchise> Franchises { get; set; }
 
-
-
         public MovieCharacterDbContext([NotNullAttribute] DbContextOptions options) : base(options)
         {
         }
@@ -89,8 +87,6 @@ namespace MovieChatacterAPI.Models
                 Picture = "https://imdb.to/36EbkheW"
             });
 
-
-
             modelBuilder.Entity<Movie>()
                 .HasMany(p => p.Characters)
                 .WithMany(m => m.Movies)
@@ -107,8 +103,6 @@ namespace MovieChatacterAPI.Models
                             new { MovieId = 3, CharacterId = 3 }
                         );
                     });
-
         }
-
     }
 }
