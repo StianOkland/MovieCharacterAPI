@@ -165,7 +165,7 @@ namespace MovieChatacterAPI.Controllers
 
 
         /// <summary>
-        /// Update characters in movie
+        /// Assign characters to movie
         /// </summary>
         /// <param name="id">Movie ID</param>
         /// <returns>Update result</returns>

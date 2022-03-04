@@ -168,7 +168,7 @@ namespace MovieChatacterAPI.Controllers
 
 
         /// <summary>
-        /// Gets all movies in a franchise
+        /// Gets all characters in a franchise
         /// </summary>
         /// <param name="id">Franchise ID</param>
         /// <returns>List of movies in a franchise</returns>
@@ -201,7 +201,7 @@ namespace MovieChatacterAPI.Controllers
         }
 
         /// <summary>
-        /// Update movies in franchise
+        /// Assign movies to franchise
         /// </summary>
         /// <param name="id">Franchise ID</param>
         /// <returns>Update result</returns>
