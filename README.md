@@ -17,7 +17,7 @@ Summary here....
 
 In the package manager console in Visual Studio:
 ```bash
-`update-database`
+update-database
 ```
 
 Run the project in Visual Studio, and test the APIs in Swagger/Postman.
